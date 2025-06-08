@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Finals Loadout Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      text-align: center;
+      background-color: #D21E3D;
+      color: white; /* all text white */
+      /* Removed flex layout */
+    }
+    h1, h2, .item-card .label, button {
+      color: white;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 8px #7f0018;
+    }
+    .loadout {
+      margin-top: 30px;
+      background: #2f2f2f; /* dark grey */
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(210, 30, 61, 0.6);
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      color: white;
+      /* flex-grow removed */
+    }
+    .loadout h2 {
+      margin-bottom: 15px;
+      text-shadow: 0 0 6px #d21e3d;
+    }
+    .items-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    /* Bigger spacing between categories */
+    .items-row > .item-card:nth-child(1),
+    .items-row > .item-card:nth-child(2) {
+      margin-right: 40px;
+    }
+    .item-card {
+      flex: 0 0 auto;
+      text-align: center;
+      max-width: 160px;
+    }
+    .item-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      border: 2px solid #D21E3D;
+      box-shadow: 0 0 6px #7f0018;
+    }
+    .item-card .label {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 1rem;
+      text-shadow: 0 0 4px #7f0018;
+    }
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #7f0018;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 0 8px #7f0018;
+    }
+    button:hover {
+      background-color: #a31730;
+      box-shadow: 0 0 12px #a31730;
+    }
+    footer {
+      margin-top: 40px;
+    }
+    .signature {
+      font-size: 0.9rem;
+      color: white;
+      opacity: 0.7;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>The Finals Random Loadout Generator</h1>
+  <button onclick="generateLoadout()">Generate Loadout</button>
+  <div class="loadout" id="loadout"></div>
+
+  <footer>
+    <p class="signature">made by [501st] Gluglux</p>
+  </footer>
+
+  <script>
+    const data = {
+      Light: {
+        weapons: ["93R", "ARN-220", "Dagger", "LH1", "M11", "M26 Matter", "Recurve Bow", "SH1900", "SR-84", "Sword", "Throwing Knives", "V9S", "XP-54"],
+        gadgets: ["Breach Charge", "Gateway", "Glitch Grenade", "Gravity Vortex", "Sonar Grenade", "Nullifier", "Thermal Bore", "Thermal Vision", "Tracking Dart", "Vanishing Bomb"],
+        specialisations: ["Cloaking Device", "Evasive Dash", "Grappling Hook"]
+      },
+      Medium: {
+        weapons: ["AKM", "CB-01 Repeater", "Cerberus 12GA", "CL-40", "Dual Blades", "FAMAS", "FCAR", "Model 1887", "Pike-556", "R.357", "Riot Shield"],
+        gadgets: ["APS Turret", "Data Reshaper", "Defibrillator", "Explosive Mine", "Gas Mine", "Glitch Trap", "Jump Pad", "Zipline", "Proximity Sensor"],
+        specialisations: ["Dematerializer", "Guardian Turret", "Healing Beam"]
+      },
+      Heavy: {
+        weapons: [".50 Akimbo", "Flamethrower", "KS-23", "Lewis Gun", "M134 Minigun", "M60", "MGL32", "SA1216", "ShAK-50", "Sledgehammer", "Spear"],
+        gadgets: ["Anti-Gravity Cube", "Barricade", "C4", "Dome Shield", "Explosive Mine", "Proximity Sensor", "Lockbolt Launcher", "Pyro Mine", "RPG-7"],
+        specialisations: ["Charge 'N' Slam", "Goo Gun", "Mesh Shield", "Winch Claw"]
+      },
+      universalGadgets: ["Flashbang", "Frag Grenade", "Gas Grenade", "Goo Grenade", "Pyro Grenade", "Smoke Grenade"]
+    };
+
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function cleanNameForImage(name) {
+      return name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    }
+
+    function generateLoadout() {
+      const classOptions = ["Light", "Medium", "Heavy"];
+      const selectedClass = classOptions[Math.floor(Math.random() * classOptions.length)];
+      const classData = data[selectedClass];
+
+      const weapon = getRandomItem(classData.weapons);
+      const special = getRandomItem(classData.specialisations);
+
+      const gadgetPool = [...classData.gadgets, ...data.universalGadgets];
+      const shuffledGadgets = gadgetPool.sort(() => 0.5 - Math.random());
+      const selectedGadgets = shuffledGadgets.slice(0, 3);
+
+      const loadoutDiv = document.getElementById("loadout");
+      loadoutDiv.innerHTML = `
+        <div class="item">
+          <h2>Class: ${selectedClass}</h2>
+        </div>
+        <div class="items-row">
+          <div class="item-card">
+            <img src="images/${cleanNameForImage(special)}.png" alt="${special}">
+            <div class="label">${special}</div>
+          </div>
+          <div class="item-card">
+            <img src="images/${cleanNameForImage(weapon)}.png" alt="${weapon}">
+            <div class="label">${weapon}</div>
+          </div>
+          ${selectedGadgets.map(g => `
+            <div class="item-card">
+              <img src="images/${cleanNameForImage(g)}.png" alt="${g}">
+              <div class="label">${g}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
