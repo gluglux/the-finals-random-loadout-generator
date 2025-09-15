@@ -4,115 +4,232 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The Finals Loadout Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?Teko:wght@400;700&display=swap" rel="stylesheet">
+  
   <style>
+    /* --- STYLE GÉNÉRAL --- */
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 20px;
+      font-family: 'Teko', sans-serif;
       text-align: center;
-      background-color: #D21E3D;
-      color: white; /* all text white */
-    }
-    h1, h2, .item-card .label, button {
+      background-image: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('https://www.pcgamesn.com/wp-content/sites/pcgamesn/2023/12/the-finals-best-settings.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       color: white;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      text-shadow: 0 0 8px #7f0018;
-    }
-    .loadout {
-      margin-top: 30px;
-      background: #2f2f2f; /* dark grey */
-      border-radius: 15px;
       padding: 20px;
-      box-shadow: 0 0 12px rgba(210, 30, 61, 0.6);
-      max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
-      color: white;
     }
-    .loadout h2 {
-      margin-bottom: 15px;
-      text-shadow: 0 0 6px #d21e3d;
+
+    h1 {
+      font-size: 5rem; /* Augmenté */
+    }
+
+    /* --- ZONE DES BOUTONS DE CONTRÔLE --- */
+    .controls {
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px; /* Augmenté */
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 15px 30px; /* Augmenté */
+      font-size: 1.7rem; /* Augmenté */
+      font-family: 'Teko', sans-serif;
+      cursor: pointer;
+      border: 2px solid #FFD700;
+      border-radius: 8px;
+      color: #FFD700;
+      background-color: transparent;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    button:hover {
+      background-color: #FFD700;
+      color: #111;
+      box-shadow: 0 0 15px #FFD700;
+    }
+
+    /* --- STYLE POUR L'INTERRUPTEUR --- */
+    .switch {
+      position: relative;
+      display: inline-flex; 
+      align-items: center; 
+      cursor: pointer;
+      font-size: 1.4rem; /* Augmenté */
+      margin-left: 20px;
+    }
+
+    .switch .switch-label {
+      margin-left: 10px;
+    }
+
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      background-color: #555;
+      border-radius: 24px;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      background-color: #FFD700;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
     }
     
-    /* --- NOUVEAU CODE CSS AJOUTÉ ICI --- */
+    /* --- ZONE D'AFFICHAGE DU LOADOUT --- */
+    .loadout {
+      max-width: 1000px;
+      margin: auto;
+    }
+
     .class-header {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 15px; /* Espace entre l'image et le texte */
+      gap: 15px;
       margin-bottom: 20px;
     }
+    
     .class-header img {
-      height: 60px; /* Hauteur de l'image de la classe */
-      width: 60px;
-      border-radius: 50%; /* Pour faire une image ronde, c'est stylé ! */
-      border: 2px solid #D21E3D;
-      box-shadow: 0 0 6px #7f0018;
+      height: 70px; /* Augmenté */
+      width: 70px; /* Augmenté */
+      border-radius: 50%;
+      border: 2px solid #FFD700;
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
-    /* --- FIN DU NOUVEAU CODE CSS --- */
+
+    .class-header h2 {
+      font-size: 3.5rem; /* Augmenté */
+      text-shadow: 0 0 6px #d21e3d;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    
+    .loadout.generated .class-header img,
+    .loadout.generated .class-header h2 {
+      opacity: 1;
+    }
 
     .items-row {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 30px;
-      margin-top: 20px;
+      gap: 30px; /* Augmenté */
+      perspective: 1000px;
     }
-    /* Bigger spacing between categories */
-    .items-row > .item-card:nth-child(1),
-    .items-row > .item-card:nth-child(2) {
-      margin-right: 40px;
-    }
+
+    /* --- STYLE ET ANIMATION DES CARTES --- */
     .item-card {
-      flex: 0 0 auto;
-      text-align: center;
-      max-width: 160px;
+      width: 180px; /* Augmenté */
+      height: 250px; /* Augmenté */
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
     }
-    .item-card img {
+
+    .item-card.is-flipping {
+      transform: rotateY(180deg);
+    }
+    
+    .card-face {
+      position: absolute;
       width: 100%;
-      height: auto;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 15px;
+      background: #2f2f2f;
+      box-shadow: 0 0 12px rgba(210, 30, 61, 0.6);
+    }
+
+    .card-face-back {
+      transform: rotateY(180deg);
+    }
+
+    .card-face-front {
+       font-size: 6rem; /* Augmenté */
+    }
+
+    .item-card img {
+      width: 140px; /* Augmenté */
+      height: 140px; /* Augmenté */
       border-radius: 10px;
-      border: 2px solid #D21E3D;
-      box-shadow: 0 0 6px #7f0018;
+      margin-bottom: 10px;
     }
+
     .item-card .label {
-      margin-top: 10px;
       font-weight: bold;
-      font-size: 1rem;
-      text-shadow: 0 0 4px #7f0018;
+      font-size: 1.6rem; /* Augmenté */
+      padding: 0 10px;
     }
-    button {
-      padding: 12px 25px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #7f0018;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 0 8px #7f0018;
-    }
-    button:hover {
-      background-color: #a31730;
-      box-shadow: 0 0 12px #a31730;
-    }
+
     footer {
       margin-top: 40px;
-    }
-    .signature {
-      font-size: 0.9rem;
-      color: white;
       opacity: 0.7;
-      font-style: italic;
     }
   </style>
 </head>
 <body>
   <h1>The Finals Random Loadout Generator</h1>
-  <button onclick="generateLoadout()">Generate Loadout</button>
-  <div class="loadout" id="loadout"></div>
+
+  <div class="controls">
+    <button onclick="generateLoadout('Light')">Random Light</button>
+    <button onclick="generateLoadout('Medium')">Random Medium</button>
+    <button onclick="generateLoadout('Heavy')">Random Heavy</button>
+    <button onclick="generateLoadout()">Full Random</button>
+
+    <label class="switch">
+      <input type="checkbox" id="manual-flip-toggle">
+      <span class="slider"></span>
+      <span class="switch-label">Flip Manuellement</span>
+    </label>
+  </div>
+
+  <div class="loadout" id="loadout">
+    <div class="class-header">
+      <img id="class-icon" src="" alt="Class Icon">
+      <h2 id="class-name"></h2>
+    </div>
+    <div class="items-row">
+      <div class="item-card" id="card-0"><div class="card-face card-face-front">?</div><div class="card-face card-face-back"><img src="" alt=""><div class="label"></div></div></div>
+      <div class="item-card" id="card-1"><div class="card-face card-face-front">?</div><div class="card-face card-face-back"><img src="" alt=""><div class="label"></div></div></div>
+      <div class="item-card" id="card-2"><div class="card-face card-face-front">?</div><div class="card-face card-face-back"><img src="" alt=""><div class="label"></div></div></div>
+      <div class="item-card" id="card-3"><div class="card-face card-face-front">?</div><div class="card-face card-face-back"><img src="" alt=""><div class="label"></div></div></div>
+      <div class="item-card" id="card-4"><div class="card-face card-face-front">?</div><div class="card-face card-face-back"><img src="" alt=""><div class="label"></div></div></div>
+    </div>
+  </div>
 
   <footer>
     <p class="signature">made by [501st] Gluglux</p>
@@ -145,44 +262,72 @@
     function cleanNameForImage(name) {
       return name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     }
-    
-    // --- FONCTION JAVASCRIPT MISE À JOUR ---
-    function generateLoadout() {
-      const classOptions = ["Light", "Medium", "Heavy"];
-      const selectedClass = classOptions[Math.floor(Math.random() * classOptions.length)];
-      const classData = data[selectedClass];
 
-      const weapon = getRandomItem(classData.weapons);
-      const special = getRandomItem(classData.specialisations);
+    function generateLoadout(chosenClass) {
+      const cards = document.querySelectorAll('.item-card');
+      cards.forEach(card => {
+        card.classList.remove('is-flipping');
+      });
 
-      const gadgetPool = [...classData.gadgets, ...data.universalGadgets];
-      const shuffledGadgets = gadgetPool.sort(() => 0.5 - Math.random());
-      const selectedGadgets = shuffledGadgets.slice(0, 3);
+      setTimeout(() => {
+        let selectedClass = chosenClass;
+        if (!selectedClass) {
+          const classOptions = ["Light", "Medium", "Heavy"];
+          selectedClass = getRandomItem(classOptions);
+        }
+        const classData = data[selectedClass];
+        const special = getRandomItem(classData.specialisations);
+        const weapon = getRandomItem(classData.weapons);
+        const gadgetPool = [...classData.gadgets, ...data.universalGadgets];
+        const shuffledGadgets = gadgetPool.sort(() => 0.5 - Math.random());
+        const selectedGadgets = shuffledGadgets.slice(0, 3);
+        const allItems = [special, weapon, ...selectedGadgets];
 
-      const loadoutDiv = document.getElementById("loadout");
-      loadoutDiv.innerHTML = `
-        <div class="class-header">
-          <img src="images/${cleanNameForImage(selectedClass)}.png" alt="${selectedClass} Class Icon">
-          <h2>${selectedClass}</h2>
-        </div>
-        <div class="items-row">
-          <div class="item-card">
-            <img src="images/${cleanNameForImage(special)}.png" alt="${special}">
-            <div class="label">${special}</div>
-          </div>
-          <div class="item-card">
-            <img src="images/${cleanNameForImage(weapon)}.png" alt="${weapon}">
-            <div class="label">${weapon}</div>
-          </div>
-          ${selectedGadgets.map(g => `
-            <div class="item-card">
-              <img src="images/${cleanNameForImage(g)}.png" alt="${g}">
-              <div class="label">${g}</div>
-            </div>
-          `).join('')}
-        </div>
-      `;
+        const loadoutDiv = document.getElementById("loadout");
+        const manualFlipToggle = document.getElementById('manual-flip-toggle');
+
+        loadoutDiv.classList.add('generated');
+
+        document.getElementById('class-icon').src = `images/${cleanNameForImage(selectedClass)}.png`;
+        document.getElementById('class-name').textContent = selectedClass;
+
+        if (manualFlipToggle.checked) {
+          cards.forEach((card, index) => {
+            const item = allItems[index];
+            const imgElement = card.querySelector('.card-face-back img');
+            const labelElement = card.querySelector('.card-face-back .label');
+            
+            imgElement.src = `images/${cleanNameForImage(item)}.png`;
+            imgElement.alt = item;
+            labelElement.textContent = item;
+          });
+
+        } else {
+          cards.forEach((card, index) => {
+            setTimeout(() => {
+              card.classList.add('is-flipping');
+              setTimeout(() => {
+                const item = allItems[index];
+                const imgElement = card.querySelector('.card-face-back img');
+                const labelElement = card.querySelector('.card-face-back .label');
+                
+                imgElement.src = `images/${cleanNameForImage(item)}.png`;
+                imgElement.alt = item;
+                labelElement.textContent = item;
+              }, 300);
+            }, 100 * index);
+          });
+        }
+      }, 50);
     }
+
+    document.querySelectorAll('.item-card').forEach(card => {
+      card.addEventListener('click', function() {
+        if (document.getElementById('manual-flip-toggle').checked) {
+          this.classList.toggle('is-flipping');
+        }
+      });
+    });
   </script>
 </body>
 </html>
