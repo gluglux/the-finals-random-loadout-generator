@@ -11,7 +11,6 @@
       text-align: center;
       background-color: #D21E3D;
       color: white; /* all text white */
-      /* Removed flex layout */
     }
     h1, h2, .item-card .label, button {
       color: white;
@@ -31,12 +30,29 @@
       margin-left: auto;
       margin-right: auto;
       color: white;
-      /* flex-grow removed */
     }
     .loadout h2 {
       margin-bottom: 15px;
       text-shadow: 0 0 6px #d21e3d;
     }
+    
+    /* --- NOUVEAU CODE CSS AJOUTÉ ICI --- */
+    .class-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px; /* Espace entre l'image et le texte */
+      margin-bottom: 20px;
+    }
+    .class-header img {
+      height: 60px; /* Hauteur de l'image de la classe */
+      width: 60px;
+      border-radius: 50%; /* Pour faire une image ronde, c'est stylé ! */
+      border: 2px solid #D21E3D;
+      box-shadow: 0 0 6px #7f0018;
+    }
+    /* --- FIN DU NOUVEAU CODE CSS --- */
+
     .items-row {
       display: flex;
       justify-content: center;
@@ -129,7 +145,8 @@
     function cleanNameForImage(name) {
       return name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     }
-
+    
+    // --- FONCTION JAVASCRIPT MISE À JOUR ---
     function generateLoadout() {
       const classOptions = ["Light", "Medium", "Heavy"];
       const selectedClass = classOptions[Math.floor(Math.random() * classOptions.length)];
@@ -144,8 +161,9 @@
 
       const loadoutDiv = document.getElementById("loadout");
       loadoutDiv.innerHTML = `
-        <div class="item">
-          <h2>Class: ${selectedClass}</h2>
+        <div class="class-header">
+          <img src="images/${cleanNameForImage(selectedClass)}.png" alt="${selectedClass} Class Icon">
+          <h2>${selectedClass}</h2>
         </div>
         <div class="items-row">
           <div class="item-card">
