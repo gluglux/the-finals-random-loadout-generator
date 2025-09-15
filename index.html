@@ -194,10 +194,8 @@
         }
 
         function updateSlotContent(slotElement, item) {
-            const itemCard = slotElement.querySelector('.item-card-slot');
-            const img = itemCard.querySelector('.slot-image');
-            const label = itemCard.querySelector('.label-slot');
-
+            const img = slotElement.querySelector('.slot-image');
+            const label = slotElement.querySelector('.label-slot');
             img.src = `images/${cleanNameForImage(item)}.png`;
             img.alt = item;
             label.textContent = item;
@@ -205,23 +203,18 @@
 
         async function spinSlot(slotElement, item) {
             return new Promise(resolve => {
-                // Start spinning
                 slotElement.classList.add('is-spinning');
-                
-                // Generate temporary images for a visual effect while spinning
                 const tempImages = [];
                 const allItems = Object.values(data).flatMap(d => d.weapons.concat(d.gadgets, d.specialisations)).concat(data.universalGadgets);
                 for(let i = 0; i < 20; i++) {
                     tempImages.push(getRandomItem(allItems));
                 }
-
                 let currentIndex = 0;
                 const spinInterval = setInterval(() => {
                     updateSlotContent(slotElement, tempImages[currentIndex]);
                     currentIndex = (currentIndex + 1) % tempImages.length;
-                }, 100); // Change image every 100ms
-                
-                // Stop spinning after a delay
+                }, 100);
+
                 setTimeout(() => {
                     clearInterval(spinInterval);
                     slotElement.classList.remove('is-spinning');
@@ -232,14 +225,20 @@
         }
 
         async function generateLoadout() {
-            // Disable the button to prevent multiple clicks
             const generateButton = document.querySelector('button');
             generateButton.disabled = true;
+            
+            // Reset all slots to a default state before spinning
+            updateSlotContent(slots.class, 'Class');
+            updateSlotContent(slots.specialization, 'Specialization');
+            updateSlotContent(slots.weapon, 'Weapon');
+            updateSlotContent(slots.gadget1, 'Gadget 1');
+            updateSlotContent(slots.gadget2, 'Gadget 2');
+            updateSlotContent(slots.gadget3, 'Gadget 3');
 
             const classOptions = ["Light", "Medium", "Heavy"];
             const selectedClass = getRandomItem(classOptions);
             
-            // Spin and stop the class slot first
             await spinSlot(slots.class, selectedClass);
             await new Promise(r => setTimeout(r, stopDelay));
 
@@ -264,7 +263,6 @@
 
             await spinSlot(slots.gadget3, selectedGadgets[2]);
 
-            // Re-enable the button
             generateButton.disabled = false;
         }
     </script>
