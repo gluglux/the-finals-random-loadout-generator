@@ -1,171 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The Finals Loadout Generator</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 20px;
-      text-align: center;
-      background-color: #D21E3D;
-      color: white; /* all text white */
-      /* Removed flex layout */
-    }
-    h1, h2, .item-card .label, button {
-      color: white;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      text-shadow: 0 0 8px #7f0018;
-    }
-    .loadout {
-      margin-top: 30px;
-      background: #2f2f2f; /* dark grey */
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 0 12px rgba(210, 30, 61, 0.6);
-      max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
-      color: white;
-      /* flex-grow removed */
-    }
-    .loadout h2 {
-      margin-bottom: 15px;
-      text-shadow: 0 0 6px #d21e3d;
-    }
-    .items-row {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 30px;
-      margin-top: 20px;
-    }
-    /* Bigger spacing between categories */
-    .items-row > .item-card:nth-child(1),
-    .items-row > .item-card:nth-child(2) {
-      margin-right: 40px;
-    }
-    .item-card {
-      flex: 0 0 auto;
-      text-align: center;
-      max-width: 160px;
-    }
-    .item-card img {
-      width: 100%;
-      height: auto;
-      border-radius: 10px;
-      border: 2px solid #D21E3D;
-      box-shadow: 0 0 6px #7f0018;
-    }
-    .item-card .label {
-      margin-top: 10px;
-      font-weight: bold;
-      font-size: 1rem;
-      text-shadow: 0 0 4px #7f0018;
-    }
-    button {
-      padding: 12px 25px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #7f0018;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 0 8px #7f0018;
-    }
-    button:hover {
-      background-color: #a31730;
-      box-shadow: 0 0 12px #a31730;
-    }
-    footer {
-      margin-top: 40px;
-    }
-    .signature {
-      font-size: 0.9rem;
-      color: white;
-      opacity: 0.7;
-      font-style: italic;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>The Finals Loadout Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            text-align: center;
+            background-color: #D21E3D;
+            color: white;
+        }
+        h1, h2, .item-card .label, button {
+            color: white;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px #7f0018;
+        }
+        .loadout-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px; /* spacing between slots */
+            margin-top: 30px;
+            padding: 20px;
+            background: #2f2f2f;
+            border-radius: 15px;
+            box-shadow: 0 0 12px rgba(210, 30, 61, 0.6);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .slot-reel {
+            overflow: hidden; /* Hide anything outside the slot */
+            position: relative;
+            width: 180px;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            border: 2px solid #D21E3D;
+            box-shadow: 0 0 8px #7f0018;
+        }
+        .item-card-slot {
+            text-align: center;
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s ease-out; /* Smooth transition for stopping */
+        }
+        .slot-image {
+            width: 100px; /* Smaller image size for the slot */
+            height: auto;
+            border-radius: 10px;
+        }
+        .label-slot {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            text-shadow: 0 0 4px #7f0018;
+        }
+        /* Keyframes for the spinning animation */
+        @keyframes spin {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-100%);
+            }
+        }
+        .is-spinning .item-card-slot {
+            animation: spin 0.1s linear infinite;
+            will-change: transform;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #7f0018;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 0 8px #7f0018;
+        }
+        button:hover {
+            background-color: #a31730;
+            box-shadow: 0 0 12px #a31730;
+        }
+        footer {
+            margin-top: 40px;
+        }
+        .signature {
+            font-size: 0.9rem;
+            color: white;
+            opacity: 0.7;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
-  <h1>The Finals Random Loadout Generator</h1>
-  <button onclick="generateLoadout()">Generate Loadout</button>
-  <div class="loadout" id="loadout"></div>
-
-  <footer>
-    <p class="signature">made by [501st] Gluglux</p>
-  </footer>
-
-  <script>
-    const data = {
-      Light: {
-        weapons: ["93R", "ARN-220", "Dagger", "LH1", "M11", "M26 Matter", "Recurve Bow", "SH1900", "SR-84", "Sword", "Throwing Knives", "V9S", "XP-54"],
-        gadgets: ["Breach Charge", "H+ Infuser", "Gateway", "Glitch Grenade", "Gravity Vortex", "Sonar Grenade", "Nullifier", "Thermal Bore", "Thermal Vision", "Tracking Dart", "Vanishing Bomb"],
-        specialisations: ["Cloaking Device", "Evasive Dash", "Grappling Hook"]
-      },
-      Medium: {
-        weapons: ["AKM", "CB-01 Repeater", "Cerberus 12GA", "CL-40", "Dual Blades", "FAMAS", "FCAR", "Model 1887", "Pike-556", "R.357", "Riot Shield", "P90"],
-        gadgets: ["APS Turret", "Breach Drill", "Data Reshaper", "Defibrillator", "Explosive Mine", "Gas Mine", "Glitch Trap", "Jump Pad", "Zipline", "Proximity Sensor"],
-        specialisations: ["Dematerializer", "Guardian Turret", "Healing Beam"]
-      },
-      Heavy: {
-        weapons: [".50 Akimbo", "Flamethrower", "KS-23", "Lewis Gun", "M134 Minigun", "M60", "MGL32", "SA1216", "ShAK-50", "Sledgehammer", "Spear", "BFR Titan"],
-        gadgets: ["Anti-Gravity Cube", "Healing Emitter", "Barricade", "C4", "Dome Shield", "Explosive Mine", "Proximity Sensor", "Lockbolt Launcher", "Pyro Mine", "RPG-7"],
-        specialisations: ["Charge 'N' Slam", "Goo Gun", "Mesh Shield", "Winch Claw"]
-      },
-      universalGadgets: ["Flashbang", "Frag Grenade", "Gas Grenade", "Goo Grenade", "Pyro Grenade", "Smoke Grenade"]
-    };
-
-    function getRandomItem(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function cleanNameForImage(name) {
-      return name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    }
-
-    function generateLoadout() {
-      const classOptions = ["Light", "Medium", "Heavy"];
-      const selectedClass = classOptions[Math.floor(Math.random() * classOptions.length)];
-      const classData = data[selectedClass];
-
-      const weapon = getRandomItem(classData.weapons);
-      const special = getRandomItem(classData.specialisations);
-
-      const gadgetPool = [...classData.gadgets, ...data.universalGadgets];
-      const shuffledGadgets = gadgetPool.sort(() => 0.5 - Math.random());
-      const selectedGadgets = shuffledGadgets.slice(0, 3);
-
-      const loadoutDiv = document.getElementById("loadout");
-      loadoutDiv.innerHTML = `
-        <div class="item">
-          <h2>Class: ${selectedClass}</h2>
-        </div>
-        <div class="items-row">
-          <div class="item-card">
-            <img src="images/${cleanNameForImage(special)}.png" alt="${special}">
-            <div class="label">${special}</div>
-          </div>
-          <div class="item-card">
-            <img src="images/${cleanNameForImage(weapon)}.png" alt="${weapon}">
-            <div class="label">${weapon}</div>
-          </div>
-          ${selectedGadgets.map(g => `
-            <div class="item-card">
-              <img src="images/${cleanNameForImage(g)}.png" alt="${g}">
-              <div class="label">${g}</div>
+    <h1>The Finals Random Loadout Generator</h1>
+    <button onclick="generateLoadout()">Generate Loadout</button>
+    
+    <div class="loadout-container">
+        <div class="slot-reel" id="class-slot">
+            <div class="item-card-slot">
+                <img src="images/thefinalslogo.png" alt="Class" class="slot-image">
+                <div class="label-slot">Class</div>
             </div>
-          `).join('')}
         </div>
-      `;
-    }
-  </script>
+        <div class="slot-reel" id="specialization-slot">
+            <div class="item-card-slot">
+                <img src="images/thefinalslogo.png" alt="Specialization" class="slot-image">
+                <div class="label-slot">Specialization</div>
+            </div>
+        </div>
+        <div class="slot-reel" id="weapon-slot">
+            <div class="item-card-slot">
+                <img src="images/thefinalslogo.png" alt="Weapon" class="slot-image">
+                <div class="label-slot">Weapon</div>
+            </div>
+        </div>
+        <div class="slot-reel" id="gadget1-slot">
+            <div class="item-card-slot">
+                <img src="images/thefinalslogo.png" alt="Gadget 1" class="slot-image">
+                <div class="label-slot">Gadget 1</div>
+            </div>
+        </div>
+        <div class="slot-reel" id="gadget2-slot">
+            <div class="item-card-slot">
+                <img src="images/thefinalslogo.png" alt="Gadget 2" class="slot-image">
+                <div class="label-slot">Gadget 2</div>
+            </div>
+        </div>
+        <div class="slot-reel" id="gadget3-slot">
+            <div class="item-card-slot">
+                <img src="images/thefinalslogo.png" alt="Gadget 3" class="slot-image">
+                <div class="label-slot">Gadget 3</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p class="signature">made by [501st] Gluglux</p>
+    </footer>
+
+    <script>
+        const data = {
+            Light: {
+                weapons: ["93R", "ARN-220", "Dagger", "LH1", "M11", "M26 Matter", "Recurve Bow", "SH1900", "SR-84", "Sword", "Throwing Knives", "V9S", "XP-54"],
+                gadgets: ["Breach Charge", "H+ Infuser", "Gateway", "Glitch Grenade", "Gravity Vortex", "Sonar Grenade", "Nullifier", "Thermal Bore", "Thermal Vision", "Tracking Dart", "Vanishing Bomb"],
+                specialisations: ["Cloaking Device", "Evasive Dash", "Grappling Hook"]
+            },
+            Medium: {
+                weapons: ["AKM", "CB-01 Repeater", "Cerberus 12GA", "CL-40", "Dual Blades", "FAMAS", "FCAR", "Model 1887", "Pike-556", "R.357", "Riot Shield", "P90"],
+                gadgets: ["APS Turret", "Breach Drill", "Data Reshaper", "Defibrillator", "Explosive Mine", "Gas Mine", "Glitch Trap", "Jump Pad", "Zipline", "Proximity Sensor"],
+                specialisations: ["Dematerializer", "Guardian Turret", "Healing Beam"]
+            },
+            Heavy: {
+                weapons: [".50 Akimbo", "Flamethrower", "KS-23", "Lewis Gun", "M134 Minigun", "M60", "MGL32", "SA1216", "ShAK-50", "Sledgehammer", "Spear", "BFR Titan"],
+                gadgets: ["Anti-Gravity Cube", "Healing Emitter", "Barricade", "C4", "Dome Shield", "Explosive Mine", "Proximity Sensor", "Lockbolt Launcher", "Pyro Mine", "RPG-7"],
+                specialisations: ["Charge 'N' Slam", "Goo Gun", "Mesh Shield", "Winch Claw"]
+            },
+            universalGadgets: ["Flashbang", "Frag Grenade", "Gas Grenade", "Goo Grenade", "Pyro Grenade", "Smoke Grenade"]
+        };
+
+        const slots = {
+            class: document.getElementById('class-slot'),
+            specialization: document.getElementById('specialization-slot'),
+            weapon: document.getElementById('weapon-slot'),
+            gadget1: document.getElementById('gadget1-slot'),
+            gadget2: document.getElementById('gadget2-slot'),
+            gadget3: document.getElementById('gadget3-slot'),
+        };
+
+        const spinDuration = 2000; // 2 seconds for each slot to spin
+        const stopDelay = 500; // 0.5 seconds delay between each stop
+
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function cleanNameForImage(name) {
+            return name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        }
+
+        function updateSlotContent(slotElement, item) {
+            const itemCard = slotElement.querySelector('.item-card-slot');
+            const img = itemCard.querySelector('.slot-image');
+            const label = itemCard.querySelector('.label-slot');
+
+            img.src = `images/${cleanNameForImage(item)}.png`;
+            img.alt = item;
+            label.textContent = item;
+        }
+
+        async function spinSlot(slotElement, item) {
+            return new Promise(resolve => {
+                // Start spinning
+                slotElement.classList.add('is-spinning');
+                
+                // Generate temporary images for a visual effect while spinning
+                const tempImages = [];
+                const allItems = Object.values(data).flatMap(d => d.weapons.concat(d.gadgets, d.specialisations)).concat(data.universalGadgets);
+                for(let i = 0; i < 20; i++) {
+                    tempImages.push(getRandomItem(allItems));
+                }
+
+                let currentIndex = 0;
+                const spinInterval = setInterval(() => {
+                    updateSlotContent(slotElement, tempImages[currentIndex]);
+                    currentIndex = (currentIndex + 1) % tempImages.length;
+                }, 100); // Change image every 100ms
+                
+                // Stop spinning after a delay
+                setTimeout(() => {
+                    clearInterval(spinInterval);
+                    slotElement.classList.remove('is-spinning');
+                    updateSlotContent(slotElement, item);
+                    resolve();
+                }, spinDuration);
+            });
+        }
+
+        async function generateLoadout() {
+            // Disable the button to prevent multiple clicks
+            const generateButton = document.querySelector('button');
+            generateButton.disabled = true;
+
+            const classOptions = ["Light", "Medium", "Heavy"];
+            const selectedClass = getRandomItem(classOptions);
+            
+            // Spin and stop the class slot first
+            await spinSlot(slots.class, selectedClass);
+            await new Promise(r => setTimeout(r, stopDelay));
+
+            const classData = data[selectedClass];
+            const selectedSpecialization = getRandomItem(classData.specialisations);
+            await spinSlot(slots.specialization, selectedSpecialization);
+            await new Promise(r => setTimeout(r, stopDelay));
+
+            const selectedWeapon = getRandomItem(classData.weapons);
+            await spinSlot(slots.weapon, selectedWeapon);
+            await new Promise(r => setTimeout(r, stopDelay));
+
+            const gadgetPool = [...classData.gadgets, ...data.universalGadgets];
+            const shuffledGadgets = gadgetPool.sort(() => 0.5 - Math.random());
+            const selectedGadgets = shuffledGadgets.slice(0, 3);
+            
+            await spinSlot(slots.gadget1, selectedGadgets[0]);
+            await new Promise(r => setTimeout(r, stopDelay));
+
+            await spinSlot(slots.gadget2, selectedGadgets[1]);
+            await new Promise(r => setTimeout(r, stopDelay));
+
+            await spinSlot(slots.gadget3, selectedGadgets[2]);
+
+            // Re-enable the button
+            generateButton.disabled = false;
+        }
+    </script>
 </body>
 </html>
-
